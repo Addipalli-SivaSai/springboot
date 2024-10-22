@@ -40,18 +40,19 @@ pipeline {
 
             }
         }
-        stage("Archive Artifacts")
-        {
-            steps{
-                archiveArtifacts artifacts: 'Practice/target/*.jar'
-            }
-        }
+     
          stage('Package'){
             steps {
                         bat '''
                         cd Practice
                         mvn package'''
 
+            }
+        }
+           stage("Archive Artifacts")
+        {
+            steps{
+                archiveArtifacts artifacts: 'Practice/target/*.jar'
             }
         }
       
