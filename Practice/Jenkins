@@ -1,0 +1,61 @@
+pipeline { 
+     tools {
+        maven "Maven"
+    }
+  
+    agent any 
+    stages {
+       
+        stage('Build') { 
+            steps {
+                     script{
+                    bat '''cd Practice
+                          dir
+                       mvn compile '''
+                     }
+            }
+        }
+          
+        stage('Test'){
+            steps {
+                script{
+                    try{
+                        bat '''
+                        cd Practice
+                        mvn test'''
+                    }
+                    catch(Exception e)
+                    {
+                        echo "Test stage if failed due to some failure of test cases"
+                        echo "${e.getMessage()}"
+                    }
+                }
+
+            }
+        }
+        stage("Publish Test Result")
+        {
+            steps{
+                junit '*/**/target/surefire-reports/TEST-*.xml'
+
+            }
+        }
+        stage("Archive Artifacts")
+        {
+            steps{
+                archiveArtifacts artifacts: '**/target/*.jar'
+            }
+        }
+         stage('Package'){
+            steps {
+                        bat '''
+                        cd Practice
+                        mvn package'''
+
+            }
+        }
+      
+       
+    }
+  
+}
