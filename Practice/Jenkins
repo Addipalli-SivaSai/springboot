@@ -49,13 +49,34 @@ pipeline {
 
             }
         }
+        
            stage("Archive Artifacts")
         {
             steps{
                 archiveArtifacts artifacts: 'Practice/target/*.jar'
             }
         }
-      
+        stage('SonarQube analysis') {
+            steps {
+                script {
+                    def scannerHome = tool name: 'sonarqubescanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
+                    withSonarQubeEnv('sonarqube') {
+                        // def path='${scannerHome}/bin/sonar-scanner'
+                        // bat "${path}"
+                        bat ''' 
+                        C:\\ProgramData\\Jenkins\\.jenkins\\tools\\hudson.plugins.sonar.SonarRunnerInstallation\\sonarqubescanner\\bin\\sonar-scanner\
+                -Dsonar.projectKey=spring-007_project1\
+                 -Dsonar.sources=Practice\\src\\main\\java\
+                 -Dsonar.tests=Practice\\src\\test\\java\
+                 -Dsonar.java.binaries=Practice\\target\\classes\
+                 -Dsonar.organization=spring-007\
+                 -Dsonar.login=3cade956570c411a53b32955b9337e4281d5d6fd\
+                 '''
+    
+                    }
+                }
+            }
+        }
        
     }
   
